@@ -7,27 +7,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Gift, Star, Sparkles } from 'lucide-react';
 
-// =============================================================================
-// CONFIGURATION SECTION - CUSTOMIZE YOUR WHEEL HERE
-// =============================================================================
-
 const WHEEL_CONFIG = {
-  // Google Sheets Integration
-  // Replace this URL with your Google Apps Script Web App URL
-  // Instructions: 1. Create a Google Sheet, 2. Go to Extensions > Apps Script
-  // 3. Create a web app that accepts POST requests, 4. Replace the URL below
-  googleSheetUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
+   googleSheetUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
   
-  // Wheel Container Background
-  // You can use any image URL or leave empty for gradient background
-  containerBackground: '', // Example: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7'
+  containerBackground: '', 
   
-  // Game Settings
   totalPlayers: 30,
   totalWinners: 2,
   
-  // Wheel Slices Configuration
-  // Each slice can have: image, label, isWinning
   slices: [
     {
       image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop',
@@ -62,18 +49,12 @@ const WHEEL_CONFIG = {
   ]
 };
 
-// =============================================================================
-// COMPONENT IMPLEMENTATION
-// =============================================================================
-
 const Index = () => {
-  // Form state
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formErrors, setFormErrors] = useState<{email?: string; phone?: string}>({});
   
-  // Game state
   const [hasPlayed, setHasPlayed] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [showResult, setShowResult] = useState(false);
@@ -82,7 +63,6 @@ const Index = () => {
   const [winningSlice, setWinningSlice] = useState<typeof WHEEL_CONFIG.slices[0] | null>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
 
-  // Check if user has already played
   useEffect(() => {
     const playedBefore = localStorage.getItem('spin-wheel-played');
     if (playedBefore) {
@@ -90,19 +70,16 @@ const Index = () => {
     }
   }, []);
 
-  // Email validation
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // Phone validation (basic format)
   const validatePhone = (phone: string) => {
     const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
     return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
   };
 
-  // Submit form data to Google Sheets
   const submitToGoogleSheet = async (email: string, phone: string) => {
     try {
       const response = await fetch(WHEEL_CONFIG.googleSheetUrl, {
@@ -115,7 +92,7 @@ const Index = () => {
           phone: phone,
           timestamp: new Date().toISOString()
         }),
-        mode: 'no-cors' // Required for Google Apps Script
+        mode: 'no-cors' 
       });
       
       console.log('Data sent to Google Sheet successfully');
@@ -124,7 +101,6 @@ const Index = () => {
     }
   };
 
-  // Handle form submission
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -141,19 +117,16 @@ const Index = () => {
     setFormErrors(errors);
     
     if (Object.keys(errors).length === 0) {
-      // Submit to Google Sheet
       await submitToGoogleSheet(email, phone);
       setFormSubmitted(true);
     }
   };
 
-  // Calculate win probability
   const shouldWin = () => {
     const winProbability = WHEEL_CONFIG.totalWinners / WHEEL_CONFIG.totalPlayers;
     return Math.random() < winProbability;
   };
 
-  // Get winning slices
   const getWinningSlices = () => {
     return WHEEL_CONFIG.slices.map((slice, index) => ({ ...slice, index }))
                               .filter(slice => slice.isWinning);
