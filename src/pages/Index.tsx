@@ -73,63 +73,98 @@ const Index = () => {
     }, 4000);
   };
 
-  const resetGame = () => {
-    localStorage.removeItem('spin-wheel-played');
-    setHasPlayed(false);
-    setShowResult(false);
-    setIsWinner(false);
-    setRotation(0);
-  };
-
   // Define slice colors
   const getSliceColor = (index: number) => {
     if (GAME_CONFIG.winningSlices.includes(index)) {
-      return 'bg-green-600'; // Green for gift slices
+      return '#16a34a'; // Green for gift slices
     }
     
-    const colorMap = ['bg-red-800', 'bg-blue-800', 'bg-yellow-700', 'bg-orange-700'];
+    const colorMap = ['#991b1b', '#1e3a8a', '#a16207', '#c2410c']; // dark red, dark blue, dark yellow, dark orange
     const nonWinningIndex = index - GAME_CONFIG.winningSlices.filter(w => w < index).length;
     return colorMap[nonWinningIndex % colorMap.length];
   };
 
-  // Generate wheel slices
-  const generateSlices = () => {
+  // Generate SVG wheel slices
+  const generateSVGSlices = () => {
     const slices = [];
     const sliceAngle = 360 / GAME_CONFIG.wheelSlices;
+    const radius = 150;
+    const centerX = 160;
+    const centerY = 160;
     
     for (let i = 0; i < GAME_CONFIG.wheelSlices; i++) {
       const isWinningSlice = GAME_CONFIG.winningSlices.includes(i);
-      const rotation = i * sliceAngle;
-      const nextAngle = (i + 1) * sliceAngle;
+      const startAngle = (i * sliceAngle - 90) * (Math.PI / 180); // -90 to start from top
+      const endAngle = ((i + 1) * sliceAngle - 90) * (Math.PI / 180);
       
-      // Calculate the polygon points for each slice
-      const startX = 50 + 50 * Math.cos((rotation * Math.PI) / 180);
-      const startY = 50 - 50 * Math.sin((rotation * Math.PI) / 180);
-      const endX = 50 + 50 * Math.cos((nextAngle * Math.PI) / 180);
-      const endY = 50 - 50 * Math.sin((nextAngle * Math.PI) / 180);
+      const x1 = centerX + radius * Math.cos(startAngle);
+      const y1 = centerY + radius * Math.sin(startAngle);
+      const x2 = centerX + radius * Math.cos(endAngle);
+      const y2 = centerY + radius * Math.sin(endAngle);
+      
+      const largeArcFlag = sliceAngle > 180 ? 1 : 0;
+      
+      const pathData = [
+        `M ${centerX} ${centerY}`,
+        `L ${x1} ${y1}`,
+        `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+        'Z'
+      ].join(' ');
+
+      // Calculate icon position (middle of the slice)
+      const iconAngle = (startAngle + endAngle) / 2;
+      const iconRadius = radius * 0.65;
+      const iconX = centerX + iconRadius * Math.cos(iconAngle);
+      const iconY = centerY + iconRadius * Math.sin(iconAngle);
       
       slices.push(
-        <div
-          key={i}
-          className={`absolute w-full h-full ${getSliceColor(i)}`}
-          style={{
-            clipPath: `polygon(50% 50%, ${startX}% ${startY}%, ${endX}% ${endY}%)`
-          }}
-        >
-          <div 
-            className="absolute w-6 h-6 text-white flex items-center justify-center"
-            style={{
-              top: '25%',
-              left: '50%',
-              transform: `translate(-50%, -50%) rotate(${rotation + sliceAngle/2}deg)`
-            }}
-          >
-            {isWinningSlice ? <Gift className="w-5 h-5" /> : <Star className="w-5 h-5" />}
-          </div>
-        </div>
+        <g key={i}>
+          <path
+            d={pathData}
+            fill={getSliceColor(i)}
+            stroke="white"
+            strokeWidth="2"
+          />
+        </g>
       );
     }
     return slices;
+  };
+
+  // Generate icons separately to appear on top
+  const generateIcons = () => {
+    const icons = [];
+    const sliceAngle = 360 / GAME_CONFIG.wheelSlices;
+    const radius = 150;
+    const centerX = 160;
+    const centerY = 160;
+    
+    for (let i = 0; i < GAME_CONFIG.wheelSlices; i++) {
+      const isWinningSlice = GAME_CONFIG.winningSlices.includes(i);
+      const startAngle = (i * sliceAngle - 90) * (Math.PI / 180);
+      const endAngle = ((i + 1) * sliceAngle - 90) * (Math.PI / 180);
+      
+      const iconAngle = (startAngle + endAngle) / 2;
+      const iconRadius = radius * 0.65;
+      const iconX = centerX + iconRadius * Math.cos(iconAngle);
+      const iconY = centerY + iconRadius * Math.sin(iconAngle);
+      
+      icons.push(
+        <g key={`icon-${i}`}>
+          <circle cx={iconX} cy={iconY} r="16" fill="white" fillOpacity="0.9" />
+          {isWinningSlice ? (
+            <foreignObject x={iconX - 10} y={iconY - 10} width="20" height="20">
+              <Gift className="w-5 h-5 text-green-600" />
+            </foreignObject>
+          ) : (
+            <foreignObject x={iconX - 10} y={iconY - 10} width="20" height="20">
+              <Star className="w-5 h-5 text-gray-600" />
+            </foreignObject>
+          )}
+        </g>
+      );
+    }
+    return icons;
   };
 
   return (
@@ -150,17 +185,45 @@ const Index = () => {
           <div className="relative">
             <div 
               ref={wheelRef} 
-              className={`relative w-80 h-80 rounded-full border-8 border-white shadow-2xl transition-transform duration-4000 ease-out ${isSpinning ? 'animate-pulse' : ''}`} 
+              className={`transition-transform duration-4000 ease-out ${isSpinning ? 'animate-pulse' : ''}`} 
               style={{
                 transform: `rotate(${rotation}deg)`
               }}
             >
-              {generateSlices()}
-              
-              {/* Center circle */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center z-10">
-                <Sparkles className="w-8 h-8 text-purple-600" />
-              </div>
+              <svg width="320" height="320" className="drop-shadow-2xl">
+                {/* Outer border */}
+                <circle
+                  cx="160"
+                  cy="160"
+                  r="156"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="8"
+                />
+                
+                {/* Wheel slices */}
+                {generateSVGSlices()}
+                
+                {/* Icons */}
+                {generateIcons()}
+                
+                {/* Center circle */}
+                <circle
+                  cx="160"
+                  cy="160"
+                  r="32"
+                  fill="white"
+                  stroke="#e5e7eb"
+                  strokeWidth="2"
+                />
+                
+                {/* Center icon */}
+                <foreignObject x="144" y="144" width="32" height="32">
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Sparkles className="w-8 h-8 text-purple-600" />
+                  </div>
+                </foreignObject>
+              </svg>
             </div>
 
             {/* Pointer Arrow (Bottom) */}
@@ -174,13 +237,7 @@ const Index = () => {
             {hasPlayed ? (
               <div className="space-y-4">
                 <p className="text-white text-lg">You've already played!</p>
-                <Button 
-                  onClick={resetGame} 
-                  variant="outline" 
-                  className="bg-white/20 border-white/30 text-white hover:bg-white/30"
-                >
-                  Reset Game (Dev Mode)
-                </Button>
+                <p className="text-blue-200 text-sm">Come back tomorrow for another chance!</p>
               </div>
             ) : (
               <Button 
