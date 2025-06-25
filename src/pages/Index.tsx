@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -12,7 +11,6 @@ const GAME_CONFIG = {
   wheelSlices: 6,
   winningSlices: [1, 4] // Slice indices that are winning slices (0-based)
 };
-
 const Index = () => {
   const [hasPlayed, setHasPlayed] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -49,7 +47,6 @@ const Index = () => {
       return nonWinningSlices[Math.floor(Math.random() * nonWinningSlices.length)];
     }
   };
-
   const handleSpin = () => {
     if (hasPlayed || isSpinning) return;
     setIsSpinning(true);
@@ -78,7 +75,6 @@ const Index = () => {
     if (GAME_CONFIG.winningSlices.includes(index)) {
       return '#16a34a'; // Green for gift slices
     }
-    
     const colorMap = ['#991b1b', '#1e3a8a', '#a16207', '#c2410c']; // dark red, dark blue, dark yellow, dark orange
     const nonWinningIndex = index - GAME_CONFIG.winningSlices.filter(w => w < index).length;
     return colorMap[nonWinningIndex % colorMap.length];
@@ -91,42 +87,25 @@ const Index = () => {
     const radius = 150;
     const centerX = 160;
     const centerY = 160;
-    
     for (let i = 0; i < GAME_CONFIG.wheelSlices; i++) {
       const isWinningSlice = GAME_CONFIG.winningSlices.includes(i);
       const startAngle = (i * sliceAngle - 90) * (Math.PI / 180); // -90 to start from top
       const endAngle = ((i + 1) * sliceAngle - 90) * (Math.PI / 180);
-      
       const x1 = centerX + radius * Math.cos(startAngle);
       const y1 = centerY + radius * Math.sin(startAngle);
       const x2 = centerX + radius * Math.cos(endAngle);
       const y2 = centerY + radius * Math.sin(endAngle);
-      
       const largeArcFlag = sliceAngle > 180 ? 1 : 0;
-      
-      const pathData = [
-        `M ${centerX} ${centerY}`,
-        `L ${x1} ${y1}`,
-        `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-        'Z'
-      ].join(' ');
+      const pathData = [`M ${centerX} ${centerY}`, `L ${x1} ${y1}`, `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`, 'Z'].join(' ');
 
       // Calculate icon position (middle of the slice)
       const iconAngle = (startAngle + endAngle) / 2;
       const iconRadius = radius * 0.65;
       const iconX = centerX + iconRadius * Math.cos(iconAngle);
       const iconY = centerY + iconRadius * Math.sin(iconAngle);
-      
-      slices.push(
-        <g key={i}>
-          <path
-            d={pathData}
-            fill={getSliceColor(i)}
-            stroke="white"
-            strokeWidth="2"
-          />
-        </g>
-      );
+      slices.push(<g key={i}>
+          <path d={pathData} fill={getSliceColor(i)} stroke="white" strokeWidth="2" />
+        </g>);
     }
     return slices;
   };
@@ -138,37 +117,26 @@ const Index = () => {
     const radius = 150;
     const centerX = 160;
     const centerY = 160;
-    
     for (let i = 0; i < GAME_CONFIG.wheelSlices; i++) {
       const isWinningSlice = GAME_CONFIG.winningSlices.includes(i);
       const startAngle = (i * sliceAngle - 90) * (Math.PI / 180);
       const endAngle = ((i + 1) * sliceAngle - 90) * (Math.PI / 180);
-      
       const iconAngle = (startAngle + endAngle) / 2;
       const iconRadius = radius * 0.65;
       const iconX = centerX + iconRadius * Math.cos(iconAngle);
       const iconY = centerY + iconRadius * Math.sin(iconAngle);
-      
-      icons.push(
-        <g key={`icon-${i}`}>
+      icons.push(<g key={`icon-${i}`}>
           <circle cx={iconX} cy={iconY} r="16" fill="white" fillOpacity="0.9" />
-          {isWinningSlice ? (
-            <foreignObject x={iconX - 10} y={iconY - 10} width="20" height="20">
+          {isWinningSlice ? <foreignObject x={iconX - 10} y={iconY - 10} width="20" height="20">
               <Gift className="w-5 h-5 text-green-600" />
-            </foreignObject>
-          ) : (
-            <foreignObject x={iconX - 10} y={iconY - 10} width="20" height="20">
+            </foreignObject> : <foreignObject x={iconX - 10} y={iconY - 10} width="20" height="20">
               <Star className="w-5 h-5 text-gray-600" />
-            </foreignObject>
-          )}
-        </g>
-      );
+            </foreignObject>}
+        </g>);
     }
     return icons;
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+  return <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
       <div className="text-center space-y-8">
         <div className="space-y-4">
           <h1 className="text-5xl font-bold text-white mb-2">
@@ -183,23 +151,12 @@ const Index = () => {
         <div className="relative flex flex-col items-center space-y-8">
           {/* Wheel */}
           <div className="relative">
-            <div 
-              ref={wheelRef} 
-              className={`transition-transform duration-4000 ease-out ${isSpinning ? 'animate-pulse' : ''}`} 
-              style={{
-                transform: `rotate(${rotation}deg)`
-              }}
-            >
+            <div ref={wheelRef} className={`transition-transform duration-4000 ease-out ${isSpinning ? 'animate-pulse' : ''}`} style={{
+            transform: `rotate(${rotation}deg)`
+          }}>
               <svg width="320" height="320" className="drop-shadow-2xl">
                 {/* Outer border */}
-                <circle
-                  cx="160"
-                  cy="160"
-                  r="156"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="8"
-                />
+                <circle cx="160" cy="160" r="156" fill="none" stroke="white" strokeWidth="8" />
                 
                 {/* Wheel slices */}
                 {generateSVGSlices()}
@@ -208,14 +165,7 @@ const Index = () => {
                 {generateIcons()}
                 
                 {/* Center circle */}
-                <circle
-                  cx="160"
-                  cy="160"
-                  r="32"
-                  fill="white"
-                  stroke="#e5e7eb"
-                  strokeWidth="2"
-                />
+                <circle cx="160" cy="160" r="32" fill="white" stroke="#e5e7eb" strokeWidth="2" />
                 
                 {/* Center icon */}
                 <foreignObject x="144" y="144" width="32" height="32">
@@ -234,20 +184,12 @@ const Index = () => {
 
           {/* Spin Button */}
           <Card className="p-6 bg-white/10 backdrop-blur-sm border-white/20">
-            {hasPlayed ? (
-              <div className="space-y-4">
+            {hasPlayed ? <div className="space-y-4">
                 <p className="text-white text-lg">You've already played!</p>
-                <p className="text-blue-200 text-sm">Come back tomorrow for another chance!</p>
-              </div>
-            ) : (
-              <Button 
-                onClick={handleSpin} 
-                disabled={isSpinning} 
-                className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-bold py-4 px-8 text-xl rounded-full shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+                
+              </div> : <Button onClick={handleSpin} disabled={isSpinning} className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-bold py-4 px-8 text-xl rounded-full shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
                 {isSpinning ? 'Spinning...' : 'SPIN NOW!'}
-              </Button>
-            )}
+              </Button>}
           </Card>
         </div>
 
@@ -260,8 +202,7 @@ const Index = () => {
               </DialogTitle>
             </DialogHeader>
             <div className="text-center space-y-4 py-6">
-              {isWinner ? (
-                <>
+              {isWinner ? <>
                   <div className="text-6xl">🎁</div>
                   <p className="text-xl">You won a fantastic prize!</p>
                   <div className="flex justify-center space-x-2">
@@ -269,20 +210,15 @@ const Index = () => {
                     <Sparkles className="w-6 h-6 text-yellow-300" />
                     <Sparkles className="w-6 h-6 text-yellow-300" />
                   </div>
-                </>
-              ) : (
-                <>
+                </> : <>
                   <div className="text-6xl">⭐</div>
                   <p className="text-xl">Thanks for playing!</p>
                   <p className="text-sm text-blue-200">Come back tomorrow for another chance!</p>
-                </>
-              )}
+                </>}
             </div>
           </DialogContent>
         </Dialog>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
