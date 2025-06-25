@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Gift, Star, Sparkles } from 'lucide-react';
 
 const WHEEL_CONFIG = {
-   googleSheetUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
+   googleSheetUrl: 'https://script.google.com/macros/s/AKfycbxOZsiwNa2d6JTzoM0gtZXl3giwdcWf8459Ze1-dfGngZ2ch9k44tHa7cntuA-n6TT7/exec',
   
   containerBackground: '', 
   
@@ -92,7 +92,7 @@ const Index = () => {
           phone: phone,
           timestamp: new Date().toISOString()
         }),
-        mode: 'no-cors' 
+        // mode: 'no-cors' 
       });
       
       console.log('Data sent to Google Sheet successfully');
