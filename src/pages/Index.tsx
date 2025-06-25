@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Gift, Star, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 // =============================================================================
 // CONFIGURATION SECTION - CUSTOMIZE YOUR WHEEL HERE
@@ -14,53 +14,93 @@ import { Gift, Star, Sparkles } from 'lucide-react';
 const WHEEL_CONFIG = {
   // Google Sheets Integration
   // Replace this URL with your Google Apps Script Web App URL
-  // Instructions: 1. Create a Google Sheet, 2. Go to Extensions > Apps Script
-  // 3. Create a web app that accepts POST requests, 4. Replace the URL below
-  googleSheetUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
+  // To set up: 1. Create Google Apps Script 2. Deploy as web app 3. Replace URL below
+  // Current URL is a placeholder - replace with your actual Apps Script URL
+  googleSheetUrl: 'https://script.google.com/macros/s/YOUR_ACTUAL_SCRIPT_ID_HERE/exec',
   
-  // Wheel Container Background
-  // You can use any image URL or leave empty for gradient background
-  containerBackground: '', // Example: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7'
+  // Your actual Google Sheet URL (for reference, not used in code):
+  // https://docs.google.com/spreadsheets/d/1qB_Sbskcl8QHZW--HZbVtIB82-tqcG-GBl04-IrWwI8/edit?usp=sharing
   
-  // Game Settings
-  totalPlayers: 30,
-  totalWinners: 2,
+  // Wheel Container Background Image
+  // Replace with any image URL or leave empty for gradient background
+  // Example: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7'
+  containerBackground: '',
   
   // Wheel Slices Configuration
-  // Each slice can have: image, label, isWinning
+  // Each slice requires: label, color, winRatio
+  // winRatio format: "1:100" means 1 win for every 100 spins (1% chance)
   slices: [
     {
-      image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop',
-      label: 'Prize 1',
-      isWinning: true
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=100&h=100&fit=crop',
-      label: 'Try Again',
-      isWinning: false
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=100&h=100&fit=crop',
-      label: 'Better Luck',
-      isWinning: false
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=100&h=100&fit=crop',
       label: 'Grand Prize',
-      isWinning: true
+      color: '#16a34a', // Green
+      winRatio: '1:100' // 1% chance to win
     },
     {
-      image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=100&h=100&fit=crop',
+      label: 'Try Again',
+      color: '#dc2626', // Red
+      winRatio: '0:1' // Never wins
+    },
+    {
+      label: 'Better Luck',
+      color: '#2563eb', // Blue
+      winRatio: '0:1' // Never wins
+    },
+    {
+      label: 'Small Prize',
+      color: '#ca8a04', // Yellow
+      winRatio: '2:100' // 2% chance to win
+    },
+    {
       label: 'No Prize',
-      isWinning: false
+      color: '#ea580c', // Orange
+      winRatio: '0:1' // Never wins
     },
     {
-      image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop',
-      label: 'Try Next Time',
-      isWinning: false
+      label: 'Next Time',
+      color: '#7c3aed', // Purple
+      winRatio: '0:1' // Never wins
     }
   ]
 };
+
+// =============================================================================
+// HOW TO CUSTOMIZE (Documentation for non-developers)
+// =============================================================================
+/*
+TO CHANGE BACKGROUND IMAGE:
+- Replace 'containerBackground' with your image URL
+- Example: containerBackground: 'https://your-image-url.com/background.jpg'
+
+TO MODIFY SLICE TEXT:
+- Change the 'label' field for any slice
+- Example: label: 'Your Custom Text Here'
+
+TO CHANGE SLICE COLORS:
+- Update the 'color' field with any hex color code
+- Example: color: '#ff6b6b' (for a nice red)
+
+TO ADJUST WIN PROBABILITY:
+- Modify 'winRatio' using format "wins:total"
+- Examples:
+  - '1:10' = 10% chance (1 win per 10 spins)
+  - '1:100' = 1% chance (1 win per 100 spins)
+  - '5:100' = 5% chance (5 wins per 100 spins)
+  - '0:1' = Never wins (0% chance)
+
+TO CONNECT TO GOOGLE SHEETS:
+1. Go to Google Apps Script (script.google.com)
+2. Create new project and paste this code:
+   
+   function doPost(e) {
+     const sheet = SpreadsheetApp.openById('1qB_Sbskcl8QHZW--HZbVtIB82-tqcG-GBl04-IrWwI8').getActiveSheet();
+     const data = JSON.parse(e.postData.contents);
+     sheet.appendRow([data.email, data.phone, data.timestamp]);
+     return ContentService.createTextOutput('Success');
+   }
+
+3. Deploy as web app (anyone can access)
+4. Copy the web app URL and replace 'googleSheetUrl' above
+*/
 
 // =============================================================================
 // COMPONENT IMPLEMENTATION
@@ -74,21 +114,12 @@ const Index = () => {
   const [formErrors, setFormErrors] = useState<{email?: string; phone?: string}>({});
   
   // Game state
-  const [hasPlayed, setHasPlayed] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [winningSlice, setWinningSlice] = useState<typeof WHEEL_CONFIG.slices[0] | null>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
-
-  // Check if user has already played
-  useEffect(() => {
-    const playedBefore = localStorage.getItem('spin-wheel-played');
-    if (playedBefore) {
-      setHasPlayed(true);
-    }
-  }, []);
 
   // Email validation
   const validateEmail = (email: string) => {
@@ -147,46 +178,46 @@ const Index = () => {
     }
   };
 
-  // Calculate win probability
-  const shouldWin = () => {
-    const winProbability = WHEEL_CONFIG.totalWinners / WHEEL_CONFIG.totalPlayers;
-    return Math.random() < winProbability;
+  // Parse win ratio and calculate if should win
+  const parseWinRatio = (ratio: string) => {
+    const [wins, total] = ratio.split(':').map(Number);
+    return { wins, total };
   };
 
-  // Get winning slices
-  const getWinningSlices = () => {
-    return WHEEL_CONFIG.slices.map((slice, index) => ({ ...slice, index }))
-                              .filter(slice => slice.isWinning);
-  };
-
-  // Get non-winning slices
-  const getNonWinningSlices = () => {
-    return WHEEL_CONFIG.slices.map((slice, index) => ({ ...slice, index }))
-                              .filter(slice => !slice.isWinning);
-  };
-
-  // Determine which slice to land on
-  const getTargetSlice = (shouldWin: boolean) => {
-    const winningSlices = getWinningSlices();
-    const nonWinningSlices = getNonWinningSlices();
+  // Determine which slice to land on based on probabilities
+  const getTargetSlice = () => {
+    // Create weighted array based on win ratios
+    const weightedSlices: number[] = [];
     
-    if (shouldWin && winningSlices.length > 0) {
-      const randomWinningSlice = winningSlices[Math.floor(Math.random() * winningSlices.length)];
-      return randomWinningSlice.index;
-    } else if (nonWinningSlices.length > 0) {
-      const randomNonWinningSlice = nonWinningSlices[Math.floor(Math.random() * nonWinningSlices.length)];
-      return randomNonWinningSlice.index;
+    WHEEL_CONFIG.slices.forEach((slice, index) => {
+      const { wins, total } = parseWinRatio(slice.winRatio);
+      const probability = total > 0 ? wins / total : 0;
+      
+      // Add slice index to weighted array based on probability
+      // Scale probabilities to make them workable with random selection
+      const weight = Math.max(1, Math.round(probability * 1000)) || 1;
+      for (let i = 0; i < weight; i++) {
+        weightedSlices.push(index);
+      }
+    });
+    
+    // If no winning slices, add all slices equally
+    if (weightedSlices.length === 0) {
+      WHEEL_CONFIG.slices.forEach((_, index) => {
+        weightedSlices.push(index);
+      });
     }
     
-    return 0; // Fallback
+    // Select random slice from weighted array
+    const randomIndex = Math.floor(Math.random() * weightedSlices.length);
+    return weightedSlices[randomIndex];
   };
 
   const handleSpin = () => {
-    if (hasPlayed || isSpinning) return;
+    if (isSpinning) return;
     
     setIsSpinning(true);
-    const willWin = shouldWin();
-    const targetSlice = getTargetSlice(willWin);
+    const targetSlice = getTargetSlice();
 
     // Calculate rotation to land on target slice
     const sliceAngle = 360 / WHEEL_CONFIG.slices.length;
@@ -198,11 +229,11 @@ const Index = () => {
     // Set result after spin animation
     setTimeout(() => {
       setIsSpinning(false);
-      setIsWinner(willWin);
-      setWinningSlice(WHEEL_CONFIG.slices[targetSlice]);
+      const resultSlice = WHEEL_CONFIG.slices[targetSlice];
+      const { wins } = parseWinRatio(resultSlice.winRatio);
+      setIsWinner(wins > 0);
+      setWinningSlice(resultSlice);
       setShowResult(true);
-      setHasPlayed(true);
-      localStorage.setItem('spin-wheel-played', 'true');
     }, 4000);
   };
 
@@ -232,12 +263,9 @@ const Index = () => {
         'Z'
       ].join(' ');
 
-      // Calculate positions for image and text
+      // Calculate position for text
       const midAngle = (startAngle + endAngle) / 2;
-      const imageRadius = radius * 0.5;
-      const textRadius = radius * 0.8;
-      const imageX = centerX + imageRadius * Math.cos(midAngle);
-      const imageY = centerY + imageRadius * Math.sin(midAngle);
+      const textRadius = radius * 0.7;
       const textX = centerX + textRadius * Math.cos(midAngle);
       const textY = centerY + textRadius * Math.sin(midAngle);
 
@@ -245,27 +273,11 @@ const Index = () => {
         <g key={i}>
           <path 
             d={pathData} 
-            fill={slice.isWinning ? '#16a34a' : '#64748b'} 
+            fill={slice.color} 
             stroke="white" 
             strokeWidth="2" 
           />
           
-          {/* Slice Image */}
-          <foreignObject 
-            x={imageX - 20} 
-            y={imageY - 20} 
-            width="40" 
-            height="40"
-          >
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white">
-              <img 
-                src={slice.image} 
-                alt={slice.label}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </foreignObject>
-
           {/* Slice Label */}
           <text
             x={textX}
@@ -273,7 +285,7 @@ const Index = () => {
             textAnchor="middle"
             dominantBaseline="middle"
             fill="white"
-            fontSize="10"
+            fontSize="12"
             fontWeight="bold"
             className="pointer-events-none"
           >
@@ -342,59 +354,50 @@ const Index = () => {
                 type="submit" 
                 className="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600"
               >
-                Submit & Spin
+                Submit Details
               </Button>
             </form>
           </Card>
         )}
 
-        {/* Wheel Container */}
-        {formSubmitted && (
-          <div className="relative flex flex-col items-center space-y-8">
-            {/* Wheel */}
-            <div className="relative">
-              <div 
-                ref={wheelRef} 
-                className={`transition-transform duration-4000 ease-out ${isSpinning ? 'animate-pulse' : ''}`}
-                style={{ transform: `rotate(${rotation}deg)` }}
-              >
-                <svg width="320" height="320" className="drop-shadow-2xl">
-                  <circle cx="160" cy="160" r="156" fill="none" stroke="white" strokeWidth="8" />
-                  {generateSVGSlices()}
-                  <circle cx="160" cy="160" r="32" fill="white" stroke="#e5e7eb" strokeWidth="2" />
-                  <foreignObject x="144" y="144" width="32" height="32">
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Sparkles className="w-8 h-8 text-purple-600" />
-                    </div>
-                  </foreignObject>
-                </svg>
-              </div>
-
-              {/* Pointer Arrow */}
-              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-                <div className="w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-yellow-400 drop-shadow-lg"></div>
-              </div>
+        {/* Wheel Container - Always Available */}
+        <div className="relative flex flex-col items-center space-y-8">
+          {/* Wheel */}
+          <div className="relative">
+            <div 
+              ref={wheelRef} 
+              className={`transition-transform duration-4000 ease-out ${isSpinning ? 'animate-pulse' : ''}`}
+              style={{ transform: `rotate(${rotation}deg)` }}
+            >
+              <svg width="320" height="320" className="drop-shadow-2xl">
+                <circle cx="160" cy="160" r="156" fill="none" stroke="white" strokeWidth="8" />
+                {generateSVGSlices()}
+                <circle cx="160" cy="160" r="32" fill="white" stroke="#e5e7eb" strokeWidth="2" />
+                <foreignObject x="144" y="144" width="32" height="32">
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Sparkles className="w-8 h-8 text-purple-600" />
+                  </div>
+                </foreignObject>
+              </svg>
             </div>
 
-            {/* Spin Button */}
-            <Card className="p-6 bg-white/10 backdrop-blur-sm border-white/20">
-              {hasPlayed ? (
-                <div className="space-y-4">
-                  <p className="text-white text-lg">Thanks for playing!</p>
-                  <p className="text-blue-200 text-sm">One spin per device allowed</p>
-                </div>
-              ) : (
-                <Button 
-                  onClick={handleSpin} 
-                  disabled={isSpinning}
-                  className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-bold py-4 px-8 text-xl rounded-full shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSpinning ? 'Spinning...' : 'SPIN NOW!'}
-                </Button>
-              )}
-            </Card>
+            {/* Pointer Arrow */}
+            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
+              <div className="w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-yellow-400 drop-shadow-lg"></div>
+            </div>
           </div>
-        )}
+
+          {/* Spin Button */}
+          <Card className="p-6 bg-white/10 backdrop-blur-sm border-white/20">
+            <Button 
+              onClick={handleSpin} 
+              disabled={isSpinning}
+              className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-bold py-4 px-8 text-xl rounded-full shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSpinning ? 'Spinning...' : 'SPIN NOW!'}
+            </Button>
+          </Card>
+        </div>
 
         {/* Result Dialog */}
         <Dialog open={showResult} onOpenChange={setShowResult}>
