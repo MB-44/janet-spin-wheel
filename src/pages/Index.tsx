@@ -94,7 +94,10 @@ const Index = () => {
         }),
         // mode: 'no-cors' 
       });
-      
+      const json = await response.json();
+      if (json.status !== 'success') {
+        console.error("Sheet Error: ", json.message);
+      }
       console.log('Data sent to Google Sheet successfully');
     } catch (error) {
       console.error('Error sending data to Google Sheet:', error);
