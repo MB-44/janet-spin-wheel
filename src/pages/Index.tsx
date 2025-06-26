@@ -88,9 +88,8 @@ const Index = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: email,
-          phone: phone,
-          timestamp: new Date().toISOString()
+          email,
+          phone
         }),
         // mode: 'no-cors' 
       });
