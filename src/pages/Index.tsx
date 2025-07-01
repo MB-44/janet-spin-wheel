@@ -261,8 +261,14 @@ const Index = () => {
 
   return (
     <div 
-      className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4"
-      style={containerStyle}
+      className="min-h-screen flex items-center justify-center p-4"
+      // bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900
+      style={{
+        ...containerStyle,
+        backgroundImage: "url('/background.png')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
     >
       <div className="text-center space-y-8">
         <div className="space-y-4">
@@ -270,7 +276,7 @@ const Index = () => {
             Pimple Simple Spin
           </h1>
           <p className="text-xl text-blue-200">
-            Enter your details and try your luck on the wheel of fortune
+            Feeling lucky? Let’s find out!
           </p>
         </div>
 
@@ -351,7 +357,7 @@ const Index = () => {
               {hasPlayed ? (
                 <div className="space-y-4">
                   <p className="text-white text-lg">Thanks for playing!</p>
-                  <p className="text-blue-200 text-sm">Onely Spin allowed per user</p>
+                  <p className="text-blue-200 text-sm">Only Spin allowed per user</p>
                 </div>
               ) : (
                 <Button 
