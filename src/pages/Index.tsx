@@ -76,14 +76,17 @@ const Index = () => {
   };
 
   const validatePhone = (phone: string) => {
-    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-    return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+    const digits = phone.replace(/\D/g, '');
+    return  /^07\d{8}$/.test(digits);
+    // const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+    // return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
   };
 
   const submitToGoogleSheet = async (email: string, phone: string) => {
+    const digits = phone.replace(/\D/g, '');
     const url = WHEEL_CONFIG.googleSheetUrl
               + `?email=${encodeURIComponent(email)}`
-              + `&phone=${encodeURIComponent(phone)}`;
+              + `&phone=${encodeURIComponent(digits)}`;
     try {
       await fetch(url, {
         method: 'GET',
@@ -105,7 +108,7 @@ const Index = () => {
     }
     
     if (!validatePhone(phone)) {
-      errors.phone = 'Please enter a valid phone number';
+      errors.phone = 'Please enter a valid phone number (10 digits, starting with 07)';
     }
     
     setFormErrors(errors);
@@ -264,7 +267,7 @@ const Index = () => {
       <div className="text-center space-y-8">
         <div className="space-y-4">
           <h1 className="text-5xl font-bold text-white mb-2">
-            🎡 Spin to Win!
+            Pimple Simple Spin
           </h1>
           <p className="text-xl text-blue-200">
             Enter your details and try your luck on the wheel of fortune
@@ -291,7 +294,7 @@ const Index = () => {
               </div>
               
               <div>
-                <Label htmlFor="phone" className="text-white">Phone Number</Label>
+                <Label htmlFor="phone" className="text-white">Mobile Number</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -348,7 +351,7 @@ const Index = () => {
               {hasPlayed ? (
                 <div className="space-y-4">
                   <p className="text-white text-lg">Thanks for playing!</p>
-                  <p className="text-blue-200 text-sm">One spin per device allowed</p>
+                  <p className="text-blue-200 text-sm">Onely Spin allowed per user</p>
                 </div>
               ) : (
                 <Button 
