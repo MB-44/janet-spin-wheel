@@ -12,8 +12,8 @@ const WHEEL_CONFIG = {
   
   containerBackground: '', 
   
-  totalPlayers: 30,
-  totalWinners: 2,
+  totalPlayers: 1000,
+  totalWinners: 20, // 2% win rate
   
   slices: [
     {
