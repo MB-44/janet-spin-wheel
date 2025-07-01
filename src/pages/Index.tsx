@@ -300,7 +300,7 @@ const Index = () => {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+1234567890"
+                  placeholder="07XXXXXXXX"
                   className="mt-1"
                 />
                 {formErrors.phone && (
