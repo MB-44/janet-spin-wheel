@@ -81,17 +81,17 @@ const Index = () => {
   };
 
   const submitToGoogleSheet = async (email: string, phone: string) => {
-    const url = `${WHEEL_CONFIG.googleSheetUrl}`
+    const url = WHEEL_CONFIG.googleSheetUrl
               + `?email=${encodeURIComponent(email)}`
               + `&phone=${encodeURIComponent(phone)}`;
     try {
-      const res = await fetch(url);
-      const json = await res.json();
-      if (json.status !== 'ok') {
-        console.error('Sheet error', json);
-      }
+      await fetch(url, {
+        method: 'GET',
+        mode: 'no-cors',
+      });
+      console.log('Sent to SHeet (no-cors)');
     } catch (error) {
-      console.error('Network error sending to Google Sheet', error);
+      console.error('Fetch Error', error);
       }
   };
 
