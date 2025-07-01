@@ -81,26 +81,18 @@ const Index = () => {
   };
 
   const submitToGoogleSheet = async (email: string, phone: string) => {
+    const url = `${WHEEL_CONFIG.googleSheetUrl}`
+              + `?email=${encodeURIComponent(email)}`
+              + `&phone=${encodeURIComponent(phone)}`;
     try {
-      const response = await fetch(WHEEL_CONFIG.googleSheetUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          phone
-        }),
-        // mode: 'no-cors' 
-      });
-      const json = await response.json();
-      if (json.status !== 'success') {
-        console.error("Sheet Error: ", json.message);
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json.status !== 'ok') {
+        console.error('Sheet error', json);
       }
-      console.log('Data sent to Google Sheet successfully');
     } catch (error) {
-      console.error('Error sending data to Google Sheet:', error);
-    }
+      console.error('Network error sending to Google Sheet', error);
+      }
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
