@@ -302,8 +302,7 @@ const Index = () => {
             {/* Added text below the form */}
             <div className="mt-4 pt-4 border-t border-white/20">
               <p className="text-white/80 text-sm">
-                Enter your details above to participate in our exciting spin-the-wheel game! 
-                You could win amazing prizes. Good luck!
+                I hereby provide my consent to share and disclose my personal details to be used in internal promotional activities of the brand.
               </p>
             </div>
           </Card>
