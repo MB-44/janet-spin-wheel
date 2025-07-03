@@ -24,14 +24,14 @@ const WHEEL_CONFIG = {
       color: '#16a34a', // Green for winning slices
       textColor: '#ffffff',
       isWinning: true,
-      image: '/logo.png' // Add image path for each slice
+      image: '/simple.jpg' // Add image path for each slice
     },
     {
       label: 'No Prize',
       color: '#c7c4bd', // Gray for non-winning slices
       textColor: '#000000',
       isWinning: false,
-      image: '/logo2.png'
+      image: '/pimple.jpg'
     },
     {
       label: 'No Prize',
@@ -45,21 +45,21 @@ const WHEEL_CONFIG = {
       color: '#16a34a', // Green for winning slices
       textColor: '#ffffff',
       isWinning: true,
-      image: '/logo2.png'
+      image: '/simple.jpg'
     },
     {
       label: 'No Prize',
       color: '#c7c4bd', // Yellow for non-winning slices
       textColor: '#000000',
       isWinning: false,
-      image: '/logo.png'
+      image: '/pimple.jpg'
     },
     {
       label: 'No Prize',
       color: '#c7c4bd', // Purple for non-winning slices
       textColor: '#000000',
       isWinning: false,
-      image: '/logo2.png'
+      image: '/pimple2.jpg'
     }
   ]
 };
