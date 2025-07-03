@@ -26,14 +26,14 @@ const WHEEL_CONFIG = {
     },
     {
       label: 'No Prize',
-      color: '#64748b', // Gray for non-winning slices
-      textColor: '#ffffff',
+      color: '#c7c4bd', // Gray for non-winning slices
+      textColor: '#000000',
       isWinning: false
     },
     {
       label: 'No Prize',
-      color: '#dc2626', // Red for non-winning slices
-      textColor: '#ffffff',
+      color: '#c7c4bd', // Red for non-winning slices
+      textColor: '#000000',
       isWinning: false
     },
     {
@@ -44,14 +44,14 @@ const WHEEL_CONFIG = {
     },
     {
       label: 'No Prize',
-      color: '#eab308', // Yellow for non-winning slices
+      color: '#c7c4bd', // Yellow for non-winning slices
       textColor: '#000000',
       isWinning: false
     },
     {
       label: 'No Prize',
-      color: '#7c3aed', // Purple for non-winning slices
-      textColor: '#ffffff',
+      color: '#c7c4bd', // Purple for non-winning slices
+      textColor: '#000000',
       isWinning: false
     }
   ]
