@@ -227,7 +227,7 @@ const Index = () => {
           {/* Define clip path for circular image */}
           <defs>
             <clipPath id={`imageClip-${i}`}>
-              <circle cx={imageX} cy={imageY} r="20" />
+              <circle cx={imageX} cy={imageY} r="30" />
             </clipPath>
           </defs>
           
@@ -235,7 +235,7 @@ const Index = () => {
           <circle
             cx={imageX}
             cy={imageY}
-            r="22"
+            r="32"
             fill="white"
             stroke={slice.color}
             strokeWidth="2"
@@ -244,10 +244,10 @@ const Index = () => {
           {/* Add the image */}
           <image
             href={slice.image}
-            x={imageX - 20}
-            y={imageY - 20}
-            width="40"
-            height="40"
+            x={imageX - 30}
+            y={imageY - 30}
+            width="60"
+            height="60"
             clipPath={`url(#imageClip-${i})`}
             className="pointer-events-none"
           />
