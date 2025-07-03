@@ -12,7 +12,7 @@ const WHEEL_CONFIG = {
   containerBackground: '', 
   
   // Center image for the wheel (from public folder)
-  centerImage: '/placeholder.svg', // Change this to your desired image path
+  centerImage: '/logo2.png', // Change this to your desired image path
   
   totalPlayers: 1000,
   totalWinners: 20, // 2% win rate
@@ -330,7 +330,7 @@ const Index = () => {
                       <circle cx="160" cy="160" r="30" />
                     </clipPath>
                   </defs>
-                  <circle cx="160" cy="160" r="32" fill="#FFD700" stroke="#FFA500" strokeWidth="2" />
+                  <circle cx="160" cy="160" r="32" fill="#f5f4f2" stroke="#f5f4f2" strokeWidth="2" />
                   <image
                     href={WHEEL_CONFIG.centerImage}
                     x="130"
