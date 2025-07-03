@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -321,12 +320,7 @@ const Index = () => {
                 <svg width="320" height="320" className="drop-shadow-2xl">
                   <circle cx="160" cy="160" r="156" fill="none" stroke="white" strokeWidth="8" />
                   {generateSVGSlices()}
-                  <circle cx="160" cy="160" r="32" fill="white" stroke="#e5e7eb" strokeWidth="2" />
-                  <foreignObject x="144" y="144" width="32" height="32">
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Sparkles className="w-8 h-8 text-purple-600" />
-                    </div>
-                  </foreignObject>
+                  <circle cx="160" cy="160" r="32" fill="#FFD700" stroke="#FFA500" strokeWidth="2" />
                 </svg>
               </div>
 
