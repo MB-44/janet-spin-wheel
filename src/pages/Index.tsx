@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -23,43 +22,37 @@ const WHEEL_CONFIG = {
       label: 'Pimple Simple',
       color: '#16a34a', // Green for winning slices
       textColor: '#ffffff',
-      isWinning: true,
-      image: '/simple.jpg' // Add image path for each slice
+      isWinning: true
     },
     {
       label: 'No Prize',
       color: '#c7c4bd', // Gray for non-winning slices
       textColor: '#000000',
-      isWinning: false,
-      image: '/pimple.jpg'
+      isWinning: false
     },
     {
       label: 'No Prize',
       color: '#c7c4bd', // Red for non-winning slices
       textColor: '#000000',
-      isWinning: false,
-      image: '/logo.png'
+      isWinning: false
     },
     {
       label: 'Pimple Simple',
       color: '#16a34a', // Green for winning slices
       textColor: '#ffffff',
-      isWinning: true,
-      image: '/simple.jpg'
+      isWinning: true
     },
     {
       label: 'No Prize',
       color: '#c7c4bd', // Yellow for non-winning slices
       textColor: '#000000',
-      isWinning: false,
-      image: '/pimple.jpg'
+      isWinning: false
     },
     {
       label: 'No Prize',
       color: '#c7c4bd', // Purple for non-winning slices
       textColor: '#000000',
-      isWinning: false,
-      image: '/pimple2.jpg'
+      isWinning: false
     }
   ]
 };
@@ -211,9 +204,9 @@ const Index = () => {
       ].join(' ');
 
       const midAngle = (startAngle + endAngle) / 2;
-      const imageRadius = radius * 0.6;
-      const imageX = centerX + imageRadius * Math.cos(midAngle);
-      const imageY = centerY + imageRadius * Math.sin(midAngle);
+      const textRadius = radius * 0.7;
+      const textX = centerX + textRadius * Math.cos(midAngle);
+      const textY = centerY + textRadius * Math.sin(midAngle);
 
       slices.push(
         <g key={i}>
@@ -224,33 +217,18 @@ const Index = () => {
             strokeWidth="2" 
           />
           
-          {/* Define clip path for circular image */}
-          <defs>
-            <clipPath id={`imageClip-${i}`}>
-              <circle cx={imageX} cy={imageY} r="30" />
-            </clipPath>
-          </defs>
-          
-          {/* Add circular background for image */}
-          <circle
-            cx={imageX}
-            cy={imageY}
-            r="32"
-            fill="white"
-            stroke={slice.color}
-            strokeWidth="2"
-          />
-          
-          {/* Add the image */}
-          <image
-            href={slice.image}
-            x={imageX - 30}
-            y={imageY - 30}
-            width="60"
-            height="60"
-            clipPath={`url(#imageClip-${i})`}
+          <text
+            x={textX}
+            y={textY}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill={slice.textColor}
+            fontSize="12"
+            fontWeight="bold"
             className="pointer-events-none"
-          />
+          >
+            {slice.label}
+          </text>
         </g>
       );
     }
@@ -365,9 +343,9 @@ const Index = () => {
                 </svg>
               </div>
 
-              {/* Pointer Arrow - Larger and pointing up */}
-              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
-                <div className="w-0 h-0 border-l-8 border-r-8 border-b-12 border-l-transparent border-r-transparent border-b-yellow-400 drop-shadow-lg"></div>
+              {/* Pointer Arrow */}
+              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
+                <div className="w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-yellow-400 drop-shadow-lg"></div>
               </div>
             </div>
 
