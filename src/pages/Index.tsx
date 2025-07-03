@@ -12,45 +12,45 @@ const WHEEL_CONFIG = {
   containerBackground: '', 
   
   // Center image for the wheel (from public folder)
-  centerImage: '/logo2.png', // Change this to your desired image path
+  centerImage: '/logo3.png', // Change this to your desired image path
   
   totalPlayers: 1000,
   totalWinners: 20, // 2% win rate
   
   slices: [
     {
-      label: 'Pimple Simple',
+      label: 'Pimple Simple\nGift',
       color: '#16a34a', // Green for winning slices
+      textColor: '#ede024',
+      isWinning: true
+    },
+    {
+      label: 'So Close!',
+      color: '#346213', // Gray for non-winning slices
       textColor: '#ffffff',
+      isWinning: false
+    },
+    {
+      label: 'Unlucky',
+      color: '#8fc031', // Red for non-winning slices
+      textColor: '#ffffff',
+      isWinning: false
+    },
+    {
+      label: 'Pimple Simple\nGift',
+      color: '#16a34a', // Green for winning slices
+      textColor: '#ede024',
       isWinning: true
     },
     {
       label: 'Bad Luck',
-      color: '#c7c4bd', // Gray for non-winning slices
-      textColor: '#000000',
-      isWinning: false
-    },
-    {
-      label: 'Sorry',
-      color: '#828181', // Red for non-winning slices
+      color: '#346213', // Yellow for non-winning slices
       textColor: '#ffffff',
       isWinning: false
     },
     {
-      label: 'Pimple Simple',
-      color: '#16a34a', // Green for winning slices
-      textColor: '#ffffff',
-      isWinning: true
-    },
-    {
-      label: 'Bad Luck',
-      color: '#c7c4bd', // Yellow for non-winning slices
-      textColor: '#000000',
-      isWinning: false
-    },
-    {
       label: 'Sorry',
-      color: '#828181', // Purple for non-winning slices
+      color: '#8fc031', // Purple for non-winning slices
       textColor: '#ffffff',
       isWinning: false
     }
@@ -208,29 +208,37 @@ const Index = () => {
       const textX = centerX + textRadius * Math.cos(midAngle);
       const textY = centerY + textRadius * Math.sin(midAngle);
 
-      slices.push(
-        <g key={i}>
-          <path 
-            d={pathData} 
-            fill={slice.color} 
-            stroke="white" 
-            strokeWidth="2" 
-          />
-          
-          <text
-            x={textX}
-            y={textY}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fill={slice.textColor}
-            fontSize="14"
-            fontWeight="bold"
-            className="pointer-events-none"
-          >
-            {slice.label}
-          </text>
-        </g>
-      );
+  // Split label into lines for multi-line text rendering
+  const lines = slice.label.split('\n');
+  const lineHeight = 16; // px
+  const offsetY = -((lines.length - 1) * lineHeight) / 2;
+
+  slices.push(
+    <g key={i}>
+      <path 
+        d={pathData} 
+        fill={slice.color} 
+        stroke="white" 
+        strokeWidth="2" 
+      />
+      
+      <text
+        x={textX}
+        y={textY + offsetY}
+        textAnchor="middle"
+        fill={slice.textColor}
+        fontSize="14"
+        fontWeight="bold"
+        className="pointer-events-none"
+      >
+        {lines.map((line, idx) => (
+          <tspan key={idx} x={textX} dy={idx === 0 ? 0 : `${lineHeight}px`}>
+            {line}
+          </tspan>
+        ))}
+      </text>
+    </g>
+  );
     }
     return slices;
   };
