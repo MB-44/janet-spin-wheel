@@ -11,6 +11,9 @@ const WHEEL_CONFIG = {
   
   containerBackground: '', 
   
+  // Center image for the wheel (from public folder)
+  centerImage: '/placeholder.svg', // Change this to your desired image path
+  
   totalPlayers: 1000,
   totalWinners: 20, // 2% win rate
   
@@ -320,7 +323,23 @@ const Index = () => {
                 <svg width="320" height="320" className="drop-shadow-2xl">
                   <circle cx="160" cy="160" r="156" fill="none" stroke="white" strokeWidth="8" />
                   {generateSVGSlices()}
+                  
+                  {/* Center image instead of gold circle */}
+                  <defs>
+                    <clipPath id="centerClip">
+                      <circle cx="160" cy="160" r="30" />
+                    </clipPath>
+                  </defs>
                   <circle cx="160" cy="160" r="32" fill="#FFD700" stroke="#FFA500" strokeWidth="2" />
+                  <image
+                    href={WHEEL_CONFIG.centerImage}
+                    x="130"
+                    y="130"
+                    width="60"
+                    height="60"
+                    clipPath="url(#centerClip)"
+                    className="pointer-events-none"
+                  />
                 </svg>
               </div>
 
