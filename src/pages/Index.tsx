@@ -223,7 +223,7 @@ const Index = () => {
             textAnchor="middle"
             dominantBaseline="middle"
             fill={slice.textColor}
-            fontSize="12"
+            fontSize="14"
             fontWeight="bold"
             className="pointer-events-none"
           >
