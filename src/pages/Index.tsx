@@ -25,15 +25,15 @@ const WHEEL_CONFIG = {
       isWinning: true
     },
     {
-      label: 'No Prize',
+      label: 'Bad Luck',
       color: '#c7c4bd', // Gray for non-winning slices
       textColor: '#000000',
       isWinning: false
     },
     {
-      label: 'No Prize',
-      color: '#c7c4bd', // Red for non-winning slices
-      textColor: '#000000',
+      label: 'Sorry',
+      color: '#828181', // Red for non-winning slices
+      textColor: '#ffffff',
       isWinning: false
     },
     {
@@ -43,15 +43,15 @@ const WHEEL_CONFIG = {
       isWinning: true
     },
     {
-      label: 'No Prize',
+      label: 'Bad Luck',
       color: '#c7c4bd', // Yellow for non-winning slices
       textColor: '#000000',
       isWinning: false
     },
     {
-      label: 'No Prize',
-      color: '#c7c4bd', // Purple for non-winning slices
-      textColor: '#000000',
+      label: 'Sorry',
+      color: '#828181', // Purple for non-winning slices
+      textColor: '#ffffff',
       isWinning: false
     }
   ]
@@ -344,9 +344,17 @@ const Index = () => {
               </div>
 
               {/* Pointer Arrow */}
-              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
+              {/* <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
                 <div className="w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-yellow-400 drop-shadow-lg"></div>
-              </div>
+              </div> */}
+
+              <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
+  <img
+    src="/arrow-new.png"
+    alt="Pointer arrow"
+    className="w-12 h-12 drop-shadow-lg"
+  />
+</div>
             </div>
 
             {/* Spin Button */}
