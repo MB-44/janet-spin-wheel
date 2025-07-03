@@ -18,22 +18,22 @@ const WHEEL_CONFIG = {
   slices: [
     {
       image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop',
-      label: 'Prize 1',
+      label: 'Pimple Simple Bundle',
       isWinning: true
     },
     {
       image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=100&h=100&fit=crop',
-      label: 'Try Again',
+      label: 'No Prize',
       isWinning: false
     },
     {
       image: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=100&h=100&fit=crop',
-      label: 'Better Luck',
+      label: 'No Prize',
       isWinning: false
     },
     {
       image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=100&h=100&fit=crop',
-      label: 'Grand Prize',
+      label: 'Pimple Simple Bundle',
       isWinning: true
     },
     {
@@ -43,7 +43,7 @@ const WHEEL_CONFIG = {
     },
     {
       image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop',
-      label: 'Try Next Time',
+      label: 'No Prize',
       isWinning: false
     }
   ]
