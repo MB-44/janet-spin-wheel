@@ -17,7 +17,7 @@ const WHEEL_CONFIG = {
   
   slices: [
     {
-      label: 'Pimple Simple Bundle',
+      label: 'Pimple Simple',
       color: '#16a34a', // Green for winning slices
       textColor: '#ffffff',
       isWinning: true
@@ -35,7 +35,7 @@ const WHEEL_CONFIG = {
       isWinning: false
     },
     {
-      label: 'Pimple Simple Bundle',
+      label: 'Pimple Simple',
       color: '#16a34a', // Green for winning slices
       textColor: '#ffffff',
       isWinning: true
@@ -361,7 +361,7 @@ const Index = () => {
           <DialogContent className="bg-gradient-to-br from-purple-600 to-blue-600 border-none text-white">
             <DialogHeader>
               <DialogTitle className="text-center text-3xl font-bold">
-                {isWinner ? '🎉 CONGRATULATIONS! 🎉' : '😔 Better Luck Next Time!'}
+                {isWinner ? '🎉 CONGRATULATIONS! 🎉' : 'Better Luck Next Time!'}
               </DialogTitle>
             </DialogHeader>
             <div className="text-center space-y-4 py-6">
