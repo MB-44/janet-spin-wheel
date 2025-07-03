@@ -17,33 +17,39 @@ const WHEEL_CONFIG = {
   
   slices: [
     {
-      image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop',
       label: 'Pimple Simple Bundle',
+      color: '#16a34a', // Green for winning slices
+      textColor: '#ffffff',
       isWinning: true
     },
     {
-      image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=100&h=100&fit=crop',
       label: 'No Prize',
+      color: '#64748b', // Gray for non-winning slices
+      textColor: '#ffffff',
       isWinning: false
     },
     {
-      image: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=100&h=100&fit=crop',
       label: 'No Prize',
+      color: '#dc2626', // Red for non-winning slices
+      textColor: '#ffffff',
       isWinning: false
     },
     {
-      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=100&h=100&fit=crop',
       label: 'Pimple Simple Bundle',
+      color: '#16a34a', // Green for winning slices
+      textColor: '#ffffff',
       isWinning: true
     },
     {
-      image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=100&h=100&fit=crop',
       label: 'No Prize',
+      color: '#eab308', // Yellow for non-winning slices
+      textColor: '#000000',
       isWinning: false
     },
     {
-      image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop',
       label: 'No Prize',
+      color: '#7c3aed', // Purple for non-winning slices
+      textColor: '#ffffff',
       isWinning: false
     }
   ]
@@ -78,8 +84,6 @@ const Index = () => {
   const validatePhone = (phone: string) => {
     const digits = phone.replace(/\D/g, '');
     return  /^07\d{8}$/.test(digits);
-    // const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-    // return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
   };
 
   const submitToGoogleSheet = async (email: string, phone: string) => {
@@ -92,7 +96,7 @@ const Index = () => {
         method: 'GET',
         mode: 'no-cors',
       });
-      console.log('Sent to SHeet (no-cors)');
+      console.log('Sent to Sheet (no-cors)');
     } catch (error) {
       console.error('Fetch Error', error);
       }
@@ -129,13 +133,11 @@ const Index = () => {
                               .filter(slice => slice.isWinning);
   };
 
-  // Get non-winning slices
   const getNonWinningSlices = () => {
     return WHEEL_CONFIG.slices.map((slice, index) => ({ ...slice, index }))
                               .filter(slice => !slice.isWinning);
   };
 
-  // Determine which slice to land on
   const getTargetSlice = (shouldWin: boolean) => {
     const winningSlices = getWinningSlices();
     const nonWinningSlices = getNonWinningSlices();
@@ -148,7 +150,7 @@ const Index = () => {
       return randomNonWinningSlice.index;
     }
     
-    return 0; // Fallback
+    return 0;
   };
 
   const handleSpin = () => {
@@ -158,14 +160,12 @@ const Index = () => {
     const willWin = shouldWin();
     const targetSlice = getTargetSlice(willWin);
 
-    // Calculate rotation to land on target slice
     const sliceAngle = 360 / WHEEL_CONFIG.slices.length;
     const targetAngle = targetSlice * sliceAngle + sliceAngle / 2;
-    const spins = 5; // Number of full rotations
+    const spins = 5;
     const finalRotation = spins * 360 + (360 - targetAngle);
     setRotation(finalRotation);
 
-    // Set result after spin animation
     setTimeout(() => {
       setIsSpinning(false);
       setIsWinner(willWin);
@@ -176,7 +176,6 @@ const Index = () => {
     }, 4000);
   };
 
-  // Generate SVG wheel slices
   const generateSVGSlices = () => {
     const slices = [];
     const sliceAngle = 360 / WHEEL_CONFIG.slices.length;
@@ -202,12 +201,8 @@ const Index = () => {
         'Z'
       ].join(' ');
 
-      // Calculate positions for image and text
       const midAngle = (startAngle + endAngle) / 2;
-      const imageRadius = radius * 0.5;
-      const textRadius = radius * 0.8;
-      const imageX = centerX + imageRadius * Math.cos(midAngle);
-      const imageY = centerY + imageRadius * Math.sin(midAngle);
+      const textRadius = radius * 0.7;
       const textX = centerX + textRadius * Math.cos(midAngle);
       const textY = centerY + textRadius * Math.sin(midAngle);
 
@@ -215,35 +210,18 @@ const Index = () => {
         <g key={i}>
           <path 
             d={pathData} 
-            fill={slice.isWinning ? '#16a34a' : '#64748b'} 
+            fill={slice.color} 
             stroke="white" 
             strokeWidth="2" 
           />
           
-          {/* Slice Image */}
-          <foreignObject 
-            x={imageX - 20} 
-            y={imageY - 20} 
-            width="40" 
-            height="40"
-          >
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white">
-              <img 
-                src={slice.image} 
-                alt={slice.label}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </foreignObject>
-
-          {/* Slice Label */}
           <text
             x={textX}
             y={textY}
             textAnchor="middle"
             dominantBaseline="middle"
-            fill="white"
-            fontSize="10"
+            fill={slice.textColor}
+            fontSize="12"
             fontWeight="bold"
             className="pointer-events-none"
           >
@@ -262,7 +240,6 @@ const Index = () => {
   return (
     <div 
       className="min-h-screen flex items-center justify-center p-4"
-      // bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900
       style={{
         ...containerStyle,
         backgroundImage: "url('/background.png')",
@@ -276,7 +253,7 @@ const Index = () => {
             Pimple Simple Spin
           </h1>
           <p className="text-xl text-blue-200">
-            Feeling lucky? Let’s find out!
+            Feeling lucky? Let's find out!
           </p>
         </div>
 
@@ -321,6 +298,14 @@ const Index = () => {
                 Submit & Spin
               </Button>
             </form>
+            
+            {/* Added text below the form */}
+            <div className="mt-4 pt-4 border-t border-white/20">
+              <p className="text-white/80 text-sm">
+                Enter your details above to participate in our exciting spin-the-wheel game! 
+                You could win amazing prizes. Good luck!
+              </p>
+            </div>
           </Card>
         )}
 
@@ -357,7 +342,7 @@ const Index = () => {
               {hasPlayed ? (
                 <div className="space-y-4">
                   <p className="text-white text-lg">Thanks for playing!</p>
-                  <p className="text-blue-200 text-sm">Only Spin allowed per user</p>
+                  <p className="text-blue-200 text-sm">Only one spin allowed per user</p>
                 </div>
               ) : (
                 <Button 
